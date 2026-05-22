@@ -117,18 +117,18 @@ function parseRow(row: Record<string, unknown>): ParsedAssetRow {
   const remarks = cell('Remarks')
 
   return {
-    tag_number,
-    item_description,
-    date_acquired,
-    quantity_text,
-    quantity_numeric,
-    actual_count,
-    unit_cost,
-    total_cost,
-    life_span,
-    code,
-    tag_location_issued_to,
-    remarks,
+    tag_number:              tag_number              ?? undefined,
+    item_description:        item_description        ?? undefined,
+    date_acquired:           date_acquired           ?? undefined,
+    quantity_text:           quantity_text           ?? undefined,
+    quantity_numeric:        quantity_numeric        ?? undefined,
+    actual_count:            actual_count            ?? undefined,
+    unit_cost:               unit_cost               ?? undefined,
+    total_cost:              total_cost              ?? undefined,
+    life_span:               life_span               ?? undefined,
+    code:                    code                    ?? undefined,
+    tag_location_issued_to:  tag_location_issued_to  ?? undefined,
+    remarks:                 remarks                 ?? undefined,
   }
 }
 
