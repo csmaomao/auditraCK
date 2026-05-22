@@ -108,7 +108,6 @@ export default function AssetSelector({
       .eq('asset_id', assetId)
       .eq('requests.status', 'Approved')
       .eq('requests.event_date', eventDate)
-      .limit(1)
 
     // When editing, exclude the current request from the overlap check
     if (excludeRequestId) {
@@ -118,8 +117,18 @@ export default function AssetSelector({
     const { data } = await query
 
     if (data && data.length > 0) {
-      const req = data[0].requests as { event_name: string }
-      return `This asset is already booked for an approved request on this date: "${req.event_name}".`
+      // requests is returned as an array by Supabase joins
+      const eventNames = data.flatMap((row) => {
+        const reqs = row.requests as { event_name: string }[] | { event_name: string } | null
+        if (!reqs) return []
+        return Array.isArray(reqs) ? reqs.map((r) => r.event_name) : [reqs.event_name]
+      })
+
+      if (eventNames.length === 0) return null
+      if (eventNames.length === 1) {
+        return `This asset is already booked for an approved request on this date: "${eventNames[0]}".`
+      }
+      return `This asset is already booked for ${eventNames.length} approved requests on this date: ${eventNames.map((n) => `"${n}"`).join(', ')}.`
     }
     return null
   }, [eventDate, excludeRequestId])
