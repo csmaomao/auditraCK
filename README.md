@@ -36,9 +36,9 @@ cp .env.example .env.local
 Get your credentials from: **Supabase Dashboard → Project Settings → API**
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+NEXT_PUBLIC_SUPABASE_URL=https://ashplhwkjwxwubfhqmrg.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_yVZjXnrFOmhdcdL3M2U0Xw_LFR1jQPt
+SUPABASE_SERVICE_ROLE_KEY=sb_secret_qLHcdMNjPtcfX_3MOVonhA_CcmSaGDy
 ```
 
 ### 3. Set up the database
