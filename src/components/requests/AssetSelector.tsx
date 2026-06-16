@@ -78,7 +78,7 @@ export default function AssetSelector({ value, onChange, eventDate, eventEndDate
     // Filter client-side for the other half of the overlap condition:
     // their end (event_end_date ?? event_date) >= our start
     const overlapping = data.filter((row) => {
-      const req = row.requests as { event_date: string; event_end_date: string | null; event_name: string } | null
+      const req = (row.requests as unknown) as { event_date: string; event_end_date: string | null; event_name: string } | null
       if (!req) return false
       const theirEnd = req.event_end_date ?? req.event_date
       return theirEnd >= eventDate
@@ -87,7 +87,7 @@ export default function AssetSelector({ value, onChange, eventDate, eventEndDate
     if (overlapping.length === 0) return null
 
     const eventNames = overlapping.map((row) => {
-      const req = row.requests as { event_name: string } | null
+      const req = (row.requests as unknown) as { event_name: string } | null
       return req?.event_name ?? 'unknown'
     })
 
