@@ -59,13 +59,13 @@ export default function ConfirmDialog({
       aria-labelledby="confirm-dialog-title"
     >
       {/* Panel */}
-      <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-xl shadow-2xl p-6">
+      <div className="w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl p-6">
 
-        <h2 id="confirm-dialog-title" className="text-white text-base font-semibold mb-2">
+        <h2 id="confirm-dialog-title" className="text-gray-900 dark:text-white text-base font-semibold mb-2">
           {title}
         </h2>
 
-        <p className="text-gray-400 text-sm leading-relaxed mb-6">
+        <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
           {message}
         </p>
 
@@ -76,8 +76,8 @@ export default function ConfirmDialog({
             disabled={loading}
             className="
               px-4 py-2 rounded-lg text-sm font-medium
-              text-gray-300 bg-gray-800 hover:bg-gray-700
-              border border-gray-700
+              text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700
+              border border-gray-200 dark:border-gray-700
               transition-colors duration-150
               disabled:opacity-50 disabled:cursor-not-allowed
             "

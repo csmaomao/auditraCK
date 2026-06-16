@@ -17,8 +17,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    // 'dark' class enables Tailwind dark mode globally
-    <html lang="en" className="dark">
+    <html lang="en">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function() { try { var t = localStorage.getItem('auditrack-theme'); if (t !== 'light') { document.documentElement.classList.add('dark'); } } catch (e) { document.documentElement.classList.add('dark'); } })();`,
+          }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   )

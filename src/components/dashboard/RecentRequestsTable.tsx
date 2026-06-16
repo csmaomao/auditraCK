@@ -26,7 +26,7 @@ export default function RecentRequestsTable({ requests }: RecentRequestsTablePro
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-gray-800">
+          <tr className="border-b border-gray-200 dark:border-gray-800">
             {['Event Name', 'Organization', 'Date Submitted', 'Event Date', 'Venue', 'Status'].map((h) => (
               <th key={h} className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide pb-3 pr-4 last:pr-0 whitespace-nowrap">
                 {h}
@@ -34,24 +34,24 @@ export default function RecentRequestsTable({ requests }: RecentRequestsTablePro
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-800/60">
+        <tbody className="divide-y divide-gray-200/80 dark:divide-gray-800/60">
           {requests.map((req) => (
-            <tr key={req.id} className="hover:bg-gray-800/40 transition-colors duration-100">
+            <tr key={req.id} className="hover:bg-gray-100/60 dark:hover:bg-gray-800/40 transition-colors duration-100">
               <td className="py-3 pr-4">
-                <Link href="/requests" className="text-white hover:text-blue-400 transition-colors font-medium truncate max-w-[180px] block">
+                <Link href="/requests" className="text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium truncate max-w-[180px] block">
                   {req.event_name}
                 </Link>
               </td>
-              <td className="py-3 pr-4 text-gray-300 truncate max-w-[140px]">
+              <td className="py-3 pr-4 text-gray-600 dark:text-gray-300 truncate max-w-[140px]">
                 {req.organization_name}
               </td>
-              <td className="py-3 pr-4 text-gray-300 whitespace-nowrap">
+              <td className="py-3 pr-4 text-gray-600 dark:text-gray-300 whitespace-nowrap">
                 {req.date_submitted ? formatDateShort(req.date_submitted) : '—'}
               </td>
-              <td className="py-3 pr-4 text-gray-300 whitespace-nowrap">
+              <td className="py-3 pr-4 text-gray-600 dark:text-gray-300 whitespace-nowrap">
                 {formatDateShort(req.event_date)}
               </td>
-              <td className="py-3 pr-4 text-gray-300 truncate max-w-[140px]">
+              <td className="py-3 pr-4 text-gray-600 dark:text-gray-300 truncate max-w-[140px]">
                 {req.venue}
               </td>
               <td className="py-3">

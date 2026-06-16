@@ -3,35 +3,42 @@
 @tailwind utilities;
 
 /*
-  Base dark theme styles.
-  The app always runs in dark mode — the 'dark' class is set on <html>
-  in the root layout, which activates Tailwind's dark: variants.
+  Base theme styles.
+  Light mode is the default; the 'dark' class on <html> activates dark overrides.
   We do NOT use @apply dark here — 'dark' is a variant, not a utility class.
 */
 @layer base {
+  /* Light mode defaults */
   body {
-    background-color: #030712; /* gray-950 */
-    color: #f3f4f6;            /* gray-100 */
+    background-color: #f9fafb; /* gray-50 */
+    color: #111827;            /* gray-900 */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Consistent scrollbar styling for dark theme */
+  /* Dark mode overrides */
+  .dark body {
+    background-color: #030712; /* gray-950 */
+    color: #f3f4f6;            /* gray-100 */
+  }
+
+  /* Scrollbar width — applies in both modes */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
 
-  ::-webkit-scrollbar-track {
+  /* Scrollbar — dark mode only */
+  .dark ::-webkit-scrollbar-track {
     background-color: #111827; /* gray-900 */
   }
 
-  ::-webkit-scrollbar-thumb {
+  .dark ::-webkit-scrollbar-thumb {
     background-color: #374151; /* gray-700 */
     border-radius: 9999px;
   }
 
-  ::-webkit-scrollbar-thumb:hover {
+  .dark ::-webkit-scrollbar-thumb:hover {
     background-color: #4b5563; /* gray-600 */
   }
 }

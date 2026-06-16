@@ -10,7 +10,8 @@ export interface Request {
   event_name: string
   purpose?: string
   date_submitted?: string       // ISO date string (YYYY-MM-DD)
-  event_date: string            // ISO date string (YYYY-MM-DD)
+  event_date: string            // ISO date string — start date of the borrowing period
+  event_end_date?: string       // ISO date string — end date (null = single-day)
   start_time?: string           // HH:MM format
   end_time?: string             // HH:MM format
   venue: string
@@ -53,6 +54,7 @@ export interface RequestFormData {
   purpose?: string
   date_submitted?: string
   event_date: string
+  event_end_date?: string       // optional — null/empty = single-day event
   start_time?: string
   end_time?: string
   venue: string

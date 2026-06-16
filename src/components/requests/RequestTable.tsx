@@ -37,7 +37,7 @@ export default function RequestTable({ requests, onView, onEdit, onDelete }: Req
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-gray-800">
+          <tr className="border-b border-gray-200 dark:border-gray-800">
             {[
               'Organization',
               'Event Name',
@@ -58,19 +58,19 @@ export default function RequestTable({ requests, onView, onEdit, onDelete }: Req
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-800/60">
+        <tbody className="divide-y divide-gray-200/80 dark:divide-gray-800/60">
           {requests.map((req) => (
-            <tr key={req.id} className="hover:bg-gray-800/30 transition-colors">
-              <td className="py-3 pr-3 text-gray-300 max-w-[140px] truncate">
+            <tr key={req.id} className="hover:bg-gray-100/60 dark:hover:bg-gray-800/30 transition-colors">
+              <td className="py-3 pr-3 text-gray-500 dark:text-gray-300 max-w-[140px] truncate">
                 {req.organization_name}
               </td>
-              <td className="py-3 pr-3 text-white font-medium max-w-[180px] truncate">
+              <td className="py-3 pr-3 text-gray-900 dark:text-white font-medium max-w-[180px] truncate">
                 {req.event_name}
               </td>
-              <td className="py-3 pr-3 text-gray-300 whitespace-nowrap">
-                {formatDateShort(req.event_date)}
+              <td className="py-3 pr-3 text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                {formatDateShort(req.event_date)}{req.event_end_date ? ` – ${formatDateShort(req.event_end_date)}` : ''}
               </td>
-              <td className="py-3 pr-3 text-gray-300 max-w-[140px] truncate">
+              <td className="py-3 pr-3 text-gray-500 dark:text-gray-300 max-w-[140px] truncate">
                 {req.venue}
               </td>
               <td className="py-3 pr-3 text-center">

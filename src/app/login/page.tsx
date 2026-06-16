@@ -14,7 +14,7 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-gray-100 dark:bg-gray-950 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
 
         {/* AUSG branding */}
@@ -25,13 +25,13 @@ export default function LoginPage() {
             alt="AUSG Logo"
             className="inline-block w-16 h-16 rounded-full object-contain mb-4"
           />
-          <h1 className="text-white text-xl font-bold tracking-wide">AUSG</h1>
-          <p className="text-gray-400 text-sm mt-1">Asset Reservation Tracker</p>
+          <h1 className="text-gray-900 dark:text-white text-xl font-bold tracking-wide">AUSG</h1>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Asset Reservation Tracker</p>
         </div>
 
         {/* Login card */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 shadow-xl">
-          <h2 className="text-white text-lg font-semibold mb-6">Sign in to AudiTRACK</h2>
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 shadow-xl">
+          <h2 className="text-gray-900 dark:text-white text-lg font-semibold mb-6">Sign in to AudiTRACK</h2>
           <LoginForm />
         </div>
 

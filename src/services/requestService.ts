@@ -32,6 +32,7 @@ export interface RequestRow {
   purpose: string | null
   date_submitted: string | null
   event_date: string
+  event_end_date: string | null
   start_time: string | null
   end_time: string | null
   venue: string
@@ -84,6 +85,8 @@ export async function autoCompletePassedRequests(): Promise<void> {
     .update({ status: 'Completed', updated_at: new Date().toISOString() })
     .eq('status', 'Approved')
     .lt('event_date', today)
+    // Only complete when the end date has passed (or start date if no end date)
+    .or(`event_end_date.is.null,event_end_date.lt.${today}`)
 
   if (error) {
     console.error('[requestService.autoCompletePassedRequests]', error.message)
@@ -147,7 +150,7 @@ export async function getRequests(options: GetRequestsOptions = {}): Promise<{
   let query = supabase
     .from('requests')
     .select(
-      'id, organization_name, event_name, purpose, date_submitted, event_date, start_time, end_time, venue, contact_person, adamson_email, secretary_signed, auditor_signed, president_approved, status, remarks, created_at, updated_at',
+      'id, organization_name, event_name, purpose, date_submitted, event_date, event_end_date, start_time, end_time, venue, contact_person, adamson_email, secretary_signed, auditor_signed, president_approved, status, remarks, created_at, updated_at',
       { count: 'exact' }
     )
     .order('created_at', { ascending: false })
@@ -212,7 +215,7 @@ export async function getRequestWithAssets(
     supabase
       .from('requests')
       .select(
-        'id, organization_name, event_name, purpose, date_submitted, event_date, start_time, end_time, venue, contact_person, adamson_email, secretary_signed, auditor_signed, president_approved, status, remarks, created_at, updated_at'
+        'id, organization_name, event_name, purpose, date_submitted, event_date, event_end_date, start_time, end_time, venue, contact_person, adamson_email, secretary_signed, auditor_signed, president_approved, status, remarks, created_at, updated_at'
       )
       .eq('id', id)
       .single(),
@@ -301,6 +304,7 @@ export async function createRequest(
       purpose: data.purpose || null,
       date_submitted: data.date_submitted || null,
       event_date: data.event_date,
+      event_end_date: data.event_end_date || null,
       start_time: data.start_time || null,
       end_time: data.end_time || null,
       venue: data.venue,
@@ -381,6 +385,7 @@ export async function updateRequest(
       purpose: data.purpose || null,
       date_submitted: data.date_submitted || null,
       event_date: data.event_date,
+      event_end_date: data.event_end_date || null,
       start_time: data.start_time || null,
       end_time: data.end_time || null,
       venue: data.venue,

@@ -15,6 +15,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import AppShell from '@/components/layout/AppShell'
+import ThemeProvider from '@/context/ThemeContext'
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode
@@ -41,11 +42,13 @@ export default async function AuthenticatedLayout({
     .single()
 
   return (
-    <AppShell
-      userEmail={profile?.email ?? user.email}
-      userFullName={profile?.full_name ?? undefined}
-    >
-      {children}
-    </AppShell>
+    <ThemeProvider>
+      <AppShell
+        userEmail={profile?.email ?? user.email}
+        userFullName={profile?.full_name ?? undefined}
+      >
+        {children}
+      </AppShell>
+    </ThemeProvider>
   )
 }

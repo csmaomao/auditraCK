@@ -12,6 +12,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from '@/app/actions/auth'
+import { useTheme } from '@/context/ThemeContext'
 
 interface NavItem {
   label: string
@@ -83,12 +84,13 @@ interface SidebarProps {
 
 export default function Sidebar({ userEmail, userFullName, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
+  const { theme, toggleTheme } = useTheme()
 
   const sidebarContent = (
-    <aside className="flex flex-col w-64 h-full bg-gray-900 border-r border-gray-800">
+    <aside className="flex flex-col w-64 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800">
 
       {/* AUSG branding */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b border-gray-800">
+      <div className="flex items-center gap-3 px-5 py-5 border-b border-gray-200 dark:border-gray-800">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/branding/ausg-logo.png"
@@ -96,7 +98,7 @@ export default function Sidebar({ userEmail, userFullName, isOpen, onClose }: Si
           className="w-9 h-9 rounded-lg object-contain shrink-0"
         />
         <div className="min-w-0 flex-1">
-          <p className="text-white text-sm font-bold leading-tight truncate">AUSG</p>
+          <p className="text-gray-900 dark:text-white text-sm font-bold leading-tight truncate">AUSG</p>
           <p className="text-gray-500 text-xs leading-tight truncate">AudiTRACK</p>
         </div>
         {/* Close button — mobile only */}
@@ -104,7 +106,7 @@ export default function Sidebar({ userEmail, userFullName, isOpen, onClose }: Si
           <button
             type="button"
             onClick={onClose}
-            className="lg:hidden text-gray-500 hover:text-white transition-colors shrink-0"
+            className="lg:hidden text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors shrink-0"
             aria-label="Close menu"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -127,13 +129,13 @@ export default function Sidebar({ userEmail, userFullName, isOpen, onClose }: Si
                 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                 transition-colors duration-150
                 ${isActive
-                  ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-800 border border-transparent'
+                  ? 'bg-blue-600/20 text-blue-600 dark:text-blue-400 border border-blue-600/30'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 border border-transparent'
                 }
               `}
               aria-current={isActive ? 'page' : undefined}
             >
-              <span className={isActive ? 'text-blue-400' : 'text-gray-500'}>
+              <span className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}>
                 {item.icon}
               </span>
               {item.label}
@@ -143,10 +145,10 @@ export default function Sidebar({ userEmail, userFullName, isOpen, onClose }: Si
       </nav>
 
       {/* User info + logout */}
-      <div className="px-3 py-4 border-t border-gray-800">
+      <div className="px-3 py-4 border-t border-gray-200 dark:border-gray-800">
         {(userFullName || userEmail) && (
           <div className="px-3 py-2 mb-2">
-            <p className="text-white text-sm font-medium truncate">
+            <p className="text-gray-900 dark:text-white text-sm font-medium truncate">
               {userFullName || 'Auditor'}
             </p>
             {userEmail && (
@@ -155,17 +157,44 @@ export default function Sidebar({ userEmail, userFullName, isOpen, onClose }: Si
           </div>
         )}
 
+        {/* Theme toggle */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          data-testid="theme-toggle-button"
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          className="
+            flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium
+            text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800
+            border border-transparent
+            transition-colors duration-150
+          "
+        >
+          {theme === 'dark' ? (
+            /* Moon icon — current state is dark */
+            <svg data-testid="icon-moon" className="w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          ) : (
+            /* Sun icon — current state is light */
+            <svg data-testid="icon-sun" className="w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          )}
+          {theme === 'dark' ? 'Dark mode' : 'Light mode'}
+        </button>
+
         <form action={signOut}>
           <button
             type="submit"
             className="
               flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium
-              text-gray-400 hover:text-white hover:bg-gray-800
+              text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800
               border border-transparent
               transition-colors duration-150
             "
           >
-            <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <svg className="w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round"
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>

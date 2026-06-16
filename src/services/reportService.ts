@@ -26,6 +26,7 @@ export interface ReportRow {
   id: string
   date_submitted: string | null
   event_date: string
+  event_end_date: string | null
   start_time: string | null
   end_time: string | null
   organization_name: string
@@ -70,7 +71,7 @@ export async function getApprovedRequestsInRange(
   const { data, error } = await supabase
     .from('requests')
     .select(
-      `id, organization_name, event_name, date_submitted, event_date,
+      `id, organization_name, event_name, date_submitted, event_date, event_end_date,
        start_time, end_time, venue, remarks,
        request_assets(id, asset_tag_number, asset_description, quantity_requested)`
     )
@@ -99,6 +100,7 @@ export async function getApprovedRequestsInRange(
     id: row.id,
     date_submitted: row.date_submitted,
     event_date: row.event_date,
+    event_end_date: (row as { event_end_date?: string | null }).event_end_date ?? null,
     start_time: row.start_time,
     end_time: row.end_time,
     organization_name: row.organization_name,

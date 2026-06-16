@@ -26,7 +26,7 @@ export default function AppShell({
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-950">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
 
       {/* Sidebar — desktop: flex column; mobile: drawer via Sidebar internals */}
       <div className="app-sidebar-wrapper hidden lg:flex flex-shrink-0 h-full overflow-y-auto print:hidden">
@@ -47,11 +47,11 @@ export default function AppShell({
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden print:w-full">
 
         {/* Mobile top bar — hamburger + branding */}
-        <header className="lg:hidden flex items-center gap-3 px-4 py-3 bg-gray-900 border-b border-gray-800 shrink-0 print:hidden">
+        <header className="lg:hidden flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shrink-0 print:hidden">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
-            className="text-gray-400 hover:text-white transition-colors p-1 -ml-1"
+            className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors p-1 -ml-1"
             aria-label="Open menu"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -64,7 +64,7 @@ export default function AppShell({
             alt="AUSG Logo"
             className="w-7 h-7 rounded object-contain"
           />
-          <span className="text-white text-sm font-bold">AudiTRACK</span>
+          <span className="text-gray-900 dark:text-white text-sm font-bold">AudiTRACK</span>
         </header>
 
         {/* Page content */}

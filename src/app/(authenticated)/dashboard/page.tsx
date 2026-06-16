@@ -81,9 +81,9 @@ export default async function DashboardPage() {
 
       {/* Page heading */}
       <div>
-        <h1 className="text-white text-xl font-semibold">Dashboard</h1>
+        <h1 className="text-gray-900 dark:text-white text-xl font-semibold">Dashboard</h1>
         <p className="text-gray-500 text-sm mt-1">
-          Stats for <span className="text-gray-300 font-medium">{periodLabel}</span>
+          Stats for <span className="text-gray-700 dark:text-gray-300 font-medium">{periodLabel}</span>
         </p>
       </div>
 
@@ -101,10 +101,10 @@ export default async function DashboardPage() {
 
       {/* Recent requests table */}
       <section aria-label="Recent requests">
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-white text-sm font-semibold">Recent Requests</h2>
+              <h2 className="text-gray-900 dark:text-white text-sm font-semibold">Recent Requests</h2>
               <p className="text-gray-500 text-xs mt-0.5">{periodLabel}</p>
             </div>
             <a href="/requests" className="text-blue-400 hover:text-blue-300 text-xs font-medium transition-colors">

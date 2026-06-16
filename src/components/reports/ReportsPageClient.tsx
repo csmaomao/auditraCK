@@ -102,7 +102,7 @@ function DataRows({ rows }: { rows: ReportRow[] }) {
       {rows.map((row) => (
         <tr key={row.id} style={{ verticalAlign: 'top', pageBreakInside: 'avoid' }}>
           <td style={TD}>{formatDate(row.date_submitted)}</td>
-          <td style={TD}>{formatDate(row.event_date)}</td>
+          <td style={TD}>{row.event_end_date ? `${formatDate(row.event_date)} – ${formatDate(row.event_end_date)}` : formatDate(row.event_date)}</td>
           <td style={TD}>
             {row.start_time
               ? `${formatTime(row.start_time)}${row.end_time ? ` – ${formatTime(row.end_time)}` : ''}`
@@ -198,7 +198,9 @@ async function exportToExcel(rows: ReportRow[], periodLabel: string) {
 
   for (const row of rows) {
     const dateSubmitted = row.date_submitted ?? ''
-    const eventDate     = row.event_date
+    const eventDate     = row.event_end_date
+      ? `${row.event_date} – ${row.event_end_date}`
+      : row.event_date
     const time          = row.start_time
       ? `${row.start_time}${row.end_time ? ` – ${row.end_time}` : ''}`
       : ''
@@ -318,24 +320,24 @@ export default function ReportsPageClient({
 
   const totalPages = pages.length + (signatureOnLastDataPage ? 0 : 1)
 
-  const selectCls = 'px-3 py-2 rounded-lg text-sm bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-600'
+  const selectCls = 'px-3 py-2 rounded-lg text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600'
 
   return (
     <div className="space-y-6">
 
       {/* Page heading */}
       <div className="no-print">
-        <h1 className="text-white text-xl font-semibold">Reports</h1>
+        <h1 className="text-gray-900 dark:text-white text-xl font-semibold">Reports</h1>
         <p className="text-gray-500 text-sm mt-0.5">Approved Asset Borrowing Report</p>
       </div>
 
       {/* Controls */}
-      <div className="no-print bg-gray-900 border border-gray-800 rounded-xl p-4 sm:p-5 space-y-4">
+      <div className="no-print bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 sm:p-5 space-y-4">
 
         {/* Month / Year selectors */}
         <div className="flex flex-wrap items-end gap-3 sm:gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1">Month</label>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Month</label>
             <select value={month} onChange={(e) => setMonth(Number(e.target.value))} className={selectCls}>
               {MONTH_NAMES.map((n, i) => (
                 <option key={n} value={i + 1}>{n}</option>
@@ -343,7 +345,7 @@ export default function ReportsPageClient({
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1">Year</label>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Year</label>
             <select value={year} onChange={(e) => setYear(Number(e.target.value))} className={selectCls}>
               {yearOptions.map((y) => (
                 <option key={y} value={y}>{y}</option>
@@ -372,7 +374,7 @@ export default function ReportsPageClient({
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium text-gray-300 bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-colors"
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round"
@@ -385,7 +387,7 @@ export default function ReportsPageClient({
               <button
                 type="button"
                 onClick={() => exportToExcel(rows, periodLabel)}
-                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium text-gray-300 bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-colors"
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round"

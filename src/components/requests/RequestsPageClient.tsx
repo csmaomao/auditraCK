@@ -1,19 +1,5 @@
 'use client'
 
-/**
- * RequestsPageClient — client component for the Requests page.
- *
- * Manages:
- *   - Search and status filter state
- *   - Log Request modal (create)
- *   - Edit modal (pre-filled form)
- *   - Delete confirmation dialog
- *
- * Data is initially fetched server-side and passed as props.
- * After create/update/delete, the page is revalidated via server actions
- * and the browser navigates to refresh (router.refresh()).
- */
-
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import RequestTable from './RequestTable'
@@ -42,26 +28,18 @@ export default function RequestsPageClient({
 }: RequestsPageClientProps) {
   const router = useRouter()
 
-  // Filter state — changes trigger a page navigation with search params
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
-
-  // Modal state
   const [showForm, setShowForm] = useState(false)
   const [editingRequest, setEditingRequest] = useState<RequestWithAssets | null>(null)
   const [editAttachments, setEditAttachments] = useState<AttachmentRow[]>([])
   const [loadingEdit, setLoadingEdit] = useState(false)
-
-  // View modal state
   const [viewingRequest, setViewingRequest] = useState<RequestWithAssets | null>(null)
   const [viewAttachments, setViewAttachments] = useState<AttachmentRow[]>([])
   const [loadingView, setLoadingView] = useState(false)
-
-  // Delete confirmation state
   const [deletingRequest, setDeletingRequest] = useState<RequestRow | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
 
-  // Client-side filter (applied on top of server-fetched data for instant feedback)
   const filtered = initialRequests.filter((req) => {
     const matchesStatus = statusFilter === 'All' || req.status === statusFilter
     const term = search.toLowerCase()
@@ -76,20 +54,9 @@ export default function RequestsPageClient({
     setLoadingView(true)
     const supabase = createClient()
     const [requestResult, assetsResult, attachmentsResult] = await Promise.all([
-      supabase
-        .from('requests')
-        .select('id, organization_name, event_name, purpose, date_submitted, event_date, start_time, end_time, venue, contact_person, adamson_email, secretary_signed, auditor_signed, president_approved, status, remarks, created_at, updated_at')
-        .eq('id', req.id)
-        .single(),
-      supabase
-        .from('request_assets')
-        .select('id, request_id, asset_id, asset_tag_number, asset_description, quantity_requested, quantity_returned, remarks')
-        .eq('request_id', req.id),
-      supabase
-        .from('documents')
-        .select('id, request_id, file_name, file_type, document_type, storage_path, uploaded_at')
-        .eq('request_id', req.id)
-        .order('uploaded_at', { ascending: false }),
+      supabase.from('requests').select('id, organization_name, event_name, purpose, date_submitted, event_date, event_end_date, start_time, end_time, venue, contact_person, adamson_email, secretary_signed, auditor_signed, president_approved, status, remarks, created_at, updated_at').eq('id', req.id).single(),
+      supabase.from('request_assets').select('id, request_id, asset_id, asset_tag_number, asset_description, quantity_requested, quantity_returned, remarks').eq('request_id', req.id),
+      supabase.from('documents').select('id, request_id, file_name, file_type, document_type, storage_path, uploaded_at').eq('request_id', req.id).order('uploaded_at', { ascending: false }),
     ])
     if (requestResult.data) {
       setViewingRequest({ ...requestResult.data, request_assets: assetsResult.data ?? [] } as RequestWithAssets)
@@ -98,32 +65,16 @@ export default function RequestsPageClient({
     setLoadingView(false)
   }
 
-  async function handleEditClick(req: RequestRow) {    setLoadingEdit(true)
-    // Fetch full request with assets for the edit form
-    // Free-plan: two targeted queries (request + request_assets)
+  async function handleEditClick(req: RequestRow) {
+    setLoadingEdit(true)
     const supabase = createClient()
     const [requestResult, assetsResult, attachmentsResult] = await Promise.all([
-      supabase
-        .from('requests')
-        .select('id, organization_name, event_name, purpose, date_submitted, event_date, start_time, end_time, venue, contact_person, adamson_email, secretary_signed, auditor_signed, president_approved, status, remarks, created_at, updated_at')
-        .eq('id', req.id)
-        .single(),
-      supabase
-        .from('request_assets')
-        .select('id, request_id, asset_id, asset_tag_number, asset_description, quantity_requested, quantity_returned, remarks')
-        .eq('request_id', req.id),
-      supabase
-        .from('documents')
-        .select('id, request_id, file_name, file_type, document_type, storage_path, uploaded_at')
-        .eq('request_id', req.id)
-        .order('uploaded_at', { ascending: false }),
+      supabase.from('requests').select('id, organization_name, event_name, purpose, date_submitted, event_date, event_end_date, start_time, end_time, venue, contact_person, adamson_email, secretary_signed, auditor_signed, president_approved, status, remarks, created_at, updated_at').eq('id', req.id).single(),
+      supabase.from('request_assets').select('id, request_id, asset_id, asset_tag_number, asset_description, quantity_requested, quantity_returned, remarks').eq('request_id', req.id),
+      supabase.from('documents').select('id, request_id, file_name, file_type, document_type, storage_path, uploaded_at').eq('request_id', req.id).order('uploaded_at', { ascending: false }),
     ])
-
     if (requestResult.data) {
-      setEditingRequest({
-        ...requestResult.data,
-        request_assets: assetsResult.data ?? [],
-      } as RequestWithAssets)
+      setEditingRequest({ ...requestResult.data, request_assets: assetsResult.data ?? [] } as RequestWithAssets)
       setEditAttachments((attachmentsResult.data ?? []) as AttachmentRow[])
     }
     setLoadingEdit(false)
@@ -159,10 +110,10 @@ export default function RequestsPageClient({
   return (
     <div className="space-y-6">
 
-      {/* Page heading + Log Request button */}
+      {/* Page heading */}
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-white text-xl font-semibold">Requests</h1>
+          <h1 className="text-gray-900 dark:text-white text-xl font-semibold">Requests</h1>
           <p className="text-gray-500 text-sm mt-0.5">
             {initialCount} total request{initialCount !== 1 ? 's' : ''}
           </p>
@@ -183,20 +134,13 @@ export default function RequestsPageClient({
       {/* Search + filter toolbar */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="w-full sm:w-72">
-          <SearchInput
-            placeholder="Search by organization or event…"
-            onChange={setSearch}
-          />
+          <SearchInput placeholder="Search by organization or event…" onChange={setSearch} />
         </div>
-        <FilterTabs
-          options={STATUS_FILTERS}
-          active={statusFilter}
-          onChange={setStatusFilter}
-        />
+        <FilterTabs options={STATUS_FILTERS} active={statusFilter} onChange={setStatusFilter} />
       </div>
 
       {/* Requests table */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5">
         {filtered.length === 0 ? (
           <EmptyState
             message={
@@ -215,7 +159,7 @@ export default function RequestsPageClient({
         )}
       </div>
 
-      {/* Loading overlay for edit fetch */}
+      {/* Loading overlay */}
       {(loadingEdit || loadingView) && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40">
           <div className="text-white text-sm">Loading request…</div>
@@ -234,15 +178,15 @@ export default function RequestsPageClient({
       {/* Log Request / Edit modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-4 bg-black/60 overflow-y-auto">
-          <div className="w-full max-w-2xl bg-gray-900 border border-gray-700 rounded-xl shadow-2xl my-4 sm:my-8">
-            <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-800">
-              <h2 className="text-white text-base font-semibold">
+          <div className="w-full max-w-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl my-4 sm:my-8">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+              <h2 className="text-gray-900 dark:text-white text-base font-semibold">
                 {editingRequest ? 'Edit Request' : 'Log New Request'}
               </h2>
               <button
                 type="button"
                 onClick={handleFormCancel}
-                className="text-gray-500 hover:text-white transition-colors"
+                className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 aria-label="Close"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
