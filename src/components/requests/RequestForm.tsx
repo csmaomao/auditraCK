@@ -70,6 +70,8 @@ export default function RequestForm({ existing, existingAttachments = [], onSucc
   const [errors, setErrors] = useState<Partial<Record<keyof RequestFormData, string>>>({})
   const [submitting, setSubmitting] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
+  // Multi-day toggle — default off (single day), auto-on when editing a multi-day request
+  const [multiDay, setMultiDay] = useState(!!(existing?.event_end_date))
 
   function set<K extends keyof RequestFormData>(key: K, value: RequestFormData[K]) {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -81,7 +83,8 @@ export default function RequestForm({ existing, existingAttachments = [], onSucc
     if (!form.organization_name.trim()) newErrors.organization_name = 'Required'
     if (!form.event_name.trim()) newErrors.event_name = 'Required'
     if (!form.event_date) newErrors.event_date = 'Required'
-    if (form.event_end_date && form.event_date && form.event_end_date < form.event_date) {
+    if (multiDay && !form.event_end_date) newErrors.event_date = 'End date is required for multi-day borrowing'
+    if (multiDay && form.event_end_date && form.event_date && form.event_end_date < form.event_date) {
       newErrors.event_date = 'End date must be on or after the start date'
     }
     if (!form.venue.trim()) newErrors.venue = 'Required'
@@ -94,9 +97,10 @@ export default function RequestForm({ existing, existingAttachments = [], onSucc
     if (!validate()) return
     setSubmitting(true)
     setServerError(null)
+    const submitData = multiDay ? form : { ...form, event_end_date: '' }
     const result = isEdit
-      ? await updateRequestAction(existing!.id, form)
-      : await createRequestAction(form)
+      ? await updateRequestAction(existing!.id, submitData)
+      : await createRequestAction(submitData)
     if (!result.success) {
       setServerError(result.error ?? 'Something went wrong')
       setSubmitting(false)
@@ -142,7 +146,7 @@ export default function RequestForm({ existing, existingAttachments = [], onSucc
             <input type="date" value={form.date_submitted ?? ''} onChange={(e) => set('date_submitted', e.target.value)} className={inputClass} disabled={submitting} />
           </div>
           <div>
-            <label className={labelClass}>Event Start Date *</label>
+            <label className={labelClass}>Event Date *</label>
             <input type="date" value={form.event_date} onChange={(e) => {
               set('event_date', e.target.value)
               // Clear end date if it's now before the new start date
@@ -152,13 +156,37 @@ export default function RequestForm({ existing, existingAttachments = [], onSucc
             }} className={inputClass} disabled={submitting} />
             {errors.event_date && <p className={errorClass}>{errors.event_date}</p>}
           </div>
-          <div>
-            <label className={labelClass}>Event End Date <span className="text-gray-400 font-normal">(optional — for multi-day borrowing)</span></label>
-            <input type="date" value={form.event_end_date ?? ''} min={form.event_date || undefined}
-              onChange={(e) => set('event_end_date', e.target.value)}
-              className={inputClass} disabled={submitting} />
-            {form.event_end_date && form.event_date && form.event_end_date < form.event_date && (
-              <p className={errorClass}>End date must be on or after the start date</p>
+
+          {/* Multi-day toggle + end date */}
+          <div className="md:col-span-2">
+            <label className="flex items-center gap-2.5 cursor-pointer select-none w-fit">
+              <div
+                onClick={() => {
+                  const next = !multiDay
+                  setMultiDay(next)
+                  if (!next) set('event_end_date', '')
+                }}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 cursor-pointer ${multiDay ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'}`}
+              >
+                <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-200 ${multiDay ? 'translate-x-4.5' : 'translate-x-0.5'}`} />
+              </div>
+              <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Multi-day borrowing</span>
+            </label>
+            {multiDay && (
+              <div className="mt-2">
+                <label className={labelClass}>Event End Date *</label>
+                <input
+                  type="date"
+                  value={form.event_end_date ?? ''}
+                  min={form.event_date || undefined}
+                  onChange={(e) => set('event_end_date', e.target.value)}
+                  className={inputClass}
+                  disabled={submitting}
+                />
+                {form.event_end_date && form.event_date && form.event_end_date < form.event_date && (
+                  <p className={errorClass}>End date must be on or after the start date</p>
+                )}
+              </div>
             )}
           </div>
           <div>
